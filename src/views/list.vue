@@ -24,7 +24,7 @@
                     :name="item"></el-tab-pane>
             </el-tabs>
             <!-- 排序栏 -->
-            <el-tabs class="list-control" v-model="sortActive" @tab-click="handleClick">
+            <el-tabs class="list-control" v-model="sortActive" @tab-click="handleClick(filterList)">
                 <el-tab-pane label="排序：" disabled></el-tab-pane>
                 <el-tab-pane
                     class="control-item"
@@ -72,23 +72,26 @@ export default {
         };
     },
     methods: {
-        handleClick() {
+        // 排序写的不好，最好还是用一个order来控制吧
+        // 这样写不能在选择其他filter的时候排序初始化，先这样吧2019年4月27日
+        handleClick(list) {
+            // console.log(list);
             if(this.sortActive === '销量') {
                 // this.salesIcon = this.salesIcon==='↓'? '↑' : '↓';
                 if(this.salesIcon === '↑') {
                     this.salesIcon = '↓'; this.priceIcon = '';
-                    this.filterList.sort((fir, sec) => fir.sales-sec.sales);
+                    list.sort((fir, sec) => fir.sales-sec.sales);
                 } else {
                     this.salesIcon = '↑'; this.priceIcon = '';
-                    this.filterList.sort((fir, sec) => sec.sales-fir.sales);
+                    list.sort((fir, sec) => sec.sales-fir.sales);
                 }
             } else if(this.sortActive === '价格') {
                if(this.priceIcon === '↑') {
                     this.priceIcon = '↓'; this.salesIcon = '';
-                    this.filterList.sort((fir, sec) => fir.cost-sec.cost);
+                    list.sort((fir, sec) => fir.cost-sec.cost);
                 } else {
                     this.priceIcon = '↑'; this.salesIcon = '';
-                    this.filterList.sort((fir, sec) => sec.cost-fir.cost);
+                    list.sort((fir, sec) => sec.cost-fir.cost);
                 }
             } else{this.salesIcon = this.priceIcon = ''}
         },
@@ -109,30 +112,9 @@ export default {
             if(this.colorActive != 'null') list = list.filter(item => {
                 return item.color===this.colorActive
             })
+            // this.handleClick(list);
             return list;
-        },
-        // sortedFilterList() {
-        //     let list = [...this.filterList];
-        //     if(this.sortActive === '销量') {
-        //         // this.salesIcon = this.salesIcon==='↓'? '↑' : '↓';
-        //         if(this.salesIcon === '↑') {
-        //             this.salesIcon = '↓'; this.priceIcon = '';
-        //             list.sort((fir, sec) => fir.sales-sec.sales);
-        //         } else {
-        //             this.salesIcon = '↑'; this.priceIcon = '';
-        //             list.sort((fir, sec) => sec.sales-fir.sales);
-        //         }
-        //     } else if(this.sortActive === '价格') {
-        //        if(this.priceIcon === '↑') {
-        //             this.priceIcon = '↓'; this.salesIcon = '';
-        //             list.sort((fir, sec) => fir.cost-sec.cost);
-        //         } else {
-        //             this.priceIcon = '↑'; this.salesIcon = '';
-        //             list.sort((fir, sec) => sec.cost-fir.cost);
-        //         }
-        //     } else{this.salesIcon = this.priceIcon = ''}
-        //     return list;
-        // }
+        }
     },
     mounted: function() {
         this.$store.dispatch('getProductList')
@@ -140,8 +122,6 @@ export default {
 }
 
 </script>
-<style lang='scss'>
-    .nav-list {
+<style lang='scss' scoped>
 
-    }
 </style>

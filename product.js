@@ -14,7 +14,7 @@ export default [
         brand: 'Beats',
         image: require('./static/images/2.png'),
         sales: 11000,
-        cost: 1188,
+        cost: 2288,
         color: '白色'
     },
     {

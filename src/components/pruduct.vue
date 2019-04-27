@@ -47,15 +47,17 @@ export default {
 }
 .product {
   position: relative;
-  min-width: 260px;
+  min-width: 300px;
   border: 2px solid #eee;
   border-radius: 5px;
   background-color: #545c64;
   text-align: center;
   font-size: 14px;
   color: #fff;
+  white-space: nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
   .image {
-    width: 100%;
     height: 260px;
     margin: 0 auto;
     img {

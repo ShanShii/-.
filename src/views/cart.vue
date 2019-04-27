@@ -4,7 +4,8 @@
 		<el-table :data="cartProducts" style="width: 100%" ref="multipleTable">
 			<el-table-column width="40">
 				<template v-slot="scope">						
-					<input type="checkbox" v-model="scope.row.checked" @click="handleSelect(scope.row)">
+					<input type="checkbox" v-model="scope.row.checked" class="checkbox"
+						@click="handleSelect(scope.row)">
 				</template>
 			</el-table-column>
 			<el-table-column
@@ -79,7 +80,8 @@ export default {
 			this.$store.commit('deleteAll')
 		},
 		selectAll() {
-			this.all = this.all == true ? false : true
+			let checkedNum = this.cartProducts.filter(item => item.checked).length;
+			this.all =  checkedNum == this.productsNum ? false : true;
 			this.$store.commit('selectAll', this.all)
 		}
     },
@@ -99,11 +101,7 @@ export default {
             });
             return total.toFixed(2);
 		}
-	},
-	mounted() {
-		// console.log(this.cartProducts)
-		// this.cartProducts.forEach(item => item.checked = false);
-	},
+	}
 };
 </script>
 <style lang='scss' scoped>
@@ -113,6 +111,15 @@ export default {
 	}
 	img {
 		width: 60px;
+	}
+	.checkbox {
+		width: 20px;
+		height: 20px;
+		background-color: #fff;
+		// -webkit-appearance:none;
+		border: 1px solid #c9c9c9;
+		border-radius: 2px;
+		outline: none;
 	}
 	.caption {
 		display: flex;
