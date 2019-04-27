@@ -1,22 +1,27 @@
 <!-- 购物车 -->
 <template>
 	<div id="cart">
+		<!-- 购物车列表 elmentUI 表格 -->
 		<el-table :data="cartProducts" style="width: 100%" ref="multipleTable">
+			<!-- select -->
 			<el-table-column width="40">
 				<template v-slot="scope">						
 					<input type="checkbox" v-model="scope.row.checked" class="checkbox"
 						@click="handleSelect(scope.row)">
 				</template>
 			</el-table-column>
+
 			<el-table-column
 				prop="id"
 				label="商品ID"
 			></el-table-column>
+
 			<el-table-column label="pic">
 				<template v-slot="scope">
 					<img :src="scope.row.image" alt="商品图片">
 				</template>
 			</el-table-column>
+
 			<el-table-column prop="name" label="商品名称"></el-table-column>
 			
 			<el-table-column label="数量">
@@ -40,7 +45,9 @@
 					>删除</el-button>
 				</template>
 			</el-table-column>
+
 		</el-table>
+		<!-- 综合 -->
 		<div class="caption">
 			<div class="select">
 				<el-button icon="el-icon-check" size="mini" circle
@@ -65,7 +72,8 @@ export default {
 		};
     },
     methods: {
-        ...mapActions(["delProduct"]),
+		...mapActions(["delProduct"]),
+		// currentValue暂存input数目，handlechange中“导入”store 的 cartList
         saveValue(value) {
             this.currentValue = value
         },
@@ -73,12 +81,14 @@ export default {
             data.num = this.currentValue
 			this.$store.commit('updateCartNum', data)
 		},
+		// select更改store checked状态
 		handleSelect(data) {
 			this.$store.commit('updateChecked', data)
 		},
 		deleteAll() {
 			this.$store.commit('deleteAll')
 		},
+		// 若已全选则置false，否则置true
 		selectAll() {
 			let checkedNum = this.cartProducts.filter(item => item.checked).length;
 			this.all =  checkedNum == this.productsNum ? false : true;
@@ -86,7 +96,8 @@ export default {
 		}
     },
     computed: {
-        ...mapGetters(['cartProducts', 'productsNum']),
+		...mapGetters(['cartProducts', 'productsNum']),
+		// 选定商品的总价格
         selectedPrice() {
 			let total = 0;
 			this.cartProducts.forEach((item) => {
@@ -94,6 +105,7 @@ export default {
 			})
 			return total.toFixed(2);
 		},
+		// 总价
         totalPrice() {
             let total = 0;
             this.cartProducts.forEach(item => {

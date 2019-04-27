@@ -1,24 +1,23 @@
 <template>
-  <div id="app">
-    <el-menu
-      :default-active="activeIndex"
-      class="el-menu-demo"
-      mode="horizontal"
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b"
-    >
-      <el-menu-item index="1">
-        <router-link to="/" class="route">电商网站实例</router-link>
-      </el-menu-item>
-      <el-menu-item index="2">
-        <router-link to="/Cart" class="route">购物车</router-link>
-      </el-menu-item>
-    </el-menu>
-    <div class="wrapper">
-      <router-view/>
+    <div id="app">
+        <el-menu
+            :default-active="activeIndex"
+            class="el-menu-demo"
+            mode="horizontal"
+            background-color="#545c64"
+            text-color="#fff"
+            active-text-color="#ffd04b">
+        <el-menu-item index="1">
+            <router-link to="/" class="route">电商网站实例</router-link>
+        </el-menu-item>
+        <el-menu-item index="2">
+            <router-link to="/Cart" class="route">购物车</router-link>
+        </el-menu-item>
+        </el-menu>
+        <div class="wrapper">
+        <router-view/>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>

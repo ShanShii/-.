@@ -21,6 +21,7 @@ export default {
     name: "Product",
     data () {
         return {
+            // 路径中的id来确定商品，渲染页面
             id: parseInt(this.$route.params.id),
             product: null
         };
@@ -39,6 +40,7 @@ export default {
         }
     },
     created: function() {
+        // creat时获取商品信息
         this.getProduct();
     }
 }
