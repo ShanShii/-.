@@ -50,9 +50,10 @@ export default {
   min-width: 260px;
   border: 2px solid #eee;
   border-radius: 5px;
-  background-color: aqua;
+  background-color: #545c64;
   text-align: center;
   font-size: 14px;
+  color: #fff;
   .image {
     width: 100%;
     height: 260px;

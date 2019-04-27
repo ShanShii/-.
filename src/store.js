@@ -23,20 +23,60 @@ export default new Vuex.Store({
     },
     colors: state => {
       return filterMap(state.productList.map(item => item.color))
+    },
+    cartProducts: state => {
+      return state.cartList.map(({id, num, checked})=>{
+        let product = state.productList.find( item => item.id == id )
+          return {
+              id : product.id,
+              image: product.image,
+              name : product.name,
+              cost : product.cost.toFixed(2),
+              num,
+              totalPrice : (product.cost*num).toFixed(2),
+              checked
+          }
+      })
+    },
+    productsNum: state => {
+      return state.cartList.length;
     }
   },
   mutations: {
     setProductList(state, data) {
       state.productList = data;
     },
+    updateChecked(state, data) {
+      let index = state.cartList.findIndex(item => item.id === data.id);
+      state.cartList[index].checked = !state.cartList[index].checked;
+    },
+    // 加入购物车
     addCart(state, product) {
-      let index = state.cartList.indexOf(product)
+      let index = state.cartList.findIndex(item => item.id === product.id)
+      // console.log(index)
       if(index !== -1) {
         state.cartList[index].num += 1
       } else {
-        product.num = 1
-        state.cartList.push(product)
+        state.cartList.push({
+          id: product.id,
+          num: 1,
+          ///车内选定状态
+          checked: false
+        })
       }
+      // console.log(state.cartList)
+    },
+    // 购物车中更新数量
+    updateCartNum(state, data) {
+      // console.log(data)
+      let index = state.cartList.findIndex(item => item.id === data.id);
+      state.cartList[index].num = data.num;
+    },
+    selectAll(state, value) {
+      state.cartList.forEach(item => item.checked = value)
+    },
+    deleteAll(state) {
+      state.cartList = []
     }
   },
   actions: {

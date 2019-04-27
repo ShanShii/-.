@@ -1,30 +1,33 @@
 <!-- 购物车 -->
 <template>
 	<div id="cart">
-		<el-table :data="cartList" style="width: 100%" @selection-change="handleSelectionChange">
-			<el-table-column type="selection"></el-table-column>
+		<el-table :data="cartProducts" style="width: 100%" ref="multipleTable">
+			<el-table-column width="40">
+				<template v-slot="scope">						
+					<input type="checkbox" v-model="scope.row.checked" @click="handleSelect(scope.row)">
+				</template>
+			</el-table-column>
 			<el-table-column
 				prop="id"
 				label="商品ID"
 			></el-table-column>
-			<el-table-column>
+			<el-table-column label="pic">
 				<template v-slot="scope">
 					<img :src="scope.row.image" alt="商品图片">
 				</template>
 			</el-table-column>
 			<el-table-column prop="name" label="商品名称"></el-table-column>
+			
 			<el-table-column label="数量">
 				<template slot-scope="scope">
-					<!-- {{scope.row}} -->
-					<!-- {{scope.column}} -->
-					<!-- {{scope.$index}} -->
-					<!-- {{scope.$store}} -->
-					<el-input-number :min="1" size="small" v-model="scope.row.num"></el-input-number>
-					<!-- <el-input-number size="mini" :min="1" :value="scope.row.num" v-on:input="handleBlur"
-						@change="handleChange( scope.row )"></el-input-number> -->
+					<el-input-number size="mini" :min="1" :value="scope.row.num"
+                        @input="saveValue" @change="handleChange( scope.row )"></el-input-number>
 				</template>
 			</el-table-column>
-			<el-table-column prop="sales" label="单价"></el-table-column>
+
+			<el-table-column prop="cost" label="单价"></el-table-column>
+			<el-table-column prop="totalPrice" label="合计"></el-table-column>
+            
 			<el-table-column label="操作" width="100">
 				<template v-slot="scope">
 					<el-button
@@ -37,62 +40,88 @@
 				</template>
 			</el-table-column>
 		</el-table>
-		<el-input-number size="mini" :min="1" v-model="this_input_value"></el-input-number>
+		<div class="caption">
+			<div class="select">
+				<el-button icon="el-icon-check" size="mini" circle
+					@click="selectAll">全选</el-button>{{selectedPrice}}
+			</div>
+			<p>总数：{{productsNum}}</p>
+			<p>总价：{{totalPrice}}</p>
+			<el-button type="danger" icon="el-icon-delete" size="mini"
+				@click="deleteAll">清空购物车</el-button>
+		</div>
 	</div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters} from "vuex";
 export default {
     name: "Cart",
     data() {
         return {
-			multipleSelection: [],
-			this_input_value: 1
-        };
+			currentValue: 1,
+			all: false,
+		};
     },
     methods: {
         ...mapActions(["delProduct"]),
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
+        saveValue(value) {
+            this.currentValue = value
+        },
+        handleChange(data) {
+            data.num = this.currentValue
+			this.$store.commit('updateCartNum', data)
 		},
-		// handleChange(product) {
-		// 	this.$nextTick(() => {
-		// 		console.log(product.row, '&', this.cartList[product.$index])
-		// 	})
-		// },
-		handleClick(event) {
-			console.log("*************************")
-			event.blur();
+		handleSelect(data) {
+			this.$store.commit('updateChecked', data)
 		},
-		handleBlur(value){
-			console.log(value, '*', this.input_number_value)
-			this.input_number_value = value
-			console.log(value, '*', this.input_number_value)
-
+		deleteAll() {
+			this.$store.commit('deleteAll')
 		},
-		handleChange( data ) {
-			data.value = this.input_number_value;
+		selectAll() {
+			this.all = this.all == true ? false : true
+			this.$store.commit('selectAll', this.all)
 		}
     },
     computed: {
-        cartList() {
-            return this.$store.state.cartList;
-        },
+        ...mapGetters(['cartProducts', 'productsNum']),
         selectedPrice() {
-			if(this.multipleSelection.length === 0) return 0;
-			return this.multipleSelection.map(item => item.num*item.sales).reduce((prev, cur) => prev+cur)
-        }
+			let total = 0;
+			this.cartProducts.forEach((item) => {
+				if(item.checked) total += parseFloat(item.totalPrice);
+			})
+			return total.toFixed(2);
+		},
+        totalPrice() {
+            let total = 0;
+            this.cartProducts.forEach(item => {
+                total += parseFloat(item.totalPrice)
+            });
+            return total.toFixed(2);
+		}
 	},
 	mounted() {
-		console.log(this.selectedPrice)
+		// console.log(this.cartProducts)
+		// this.cartProducts.forEach(item => item.checked = false);
 	},
 };
 </script>
-<style lang='scss'>
+<style lang='scss' scoped>
 #cart {
-  img {
-    width: 60px;
-  }
+	* {
+		margin: 0;
+	}
+	img {
+		width: 60px;
+	}
+	.caption {
+		display: flex;
+		margin-top: 30px;
+		align-items: center;
+		justify-content: space-between;
+		.select {
+			line-height: 28px;
+		}
+	}
 }
 </style>
